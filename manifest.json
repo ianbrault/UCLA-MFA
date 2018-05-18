@@ -1,0 +1,19 @@
+{
+
+    "manifest_version": 2,
+    "name": "UCLA MFA Helper",
+    "version": "0.1.1",
+  
+    "description": "A browser extension to mitigate the hassle of using UCLA's mandatory MFA system",
+    "homepage_url": "https://github.com/ianbrault/UCLA-MFA",
+
+    "icons": {
+        "48": "icons/icon48.png",
+        "96": "icons/icon96.png"
+    },
+  
+    "content_scripts": [{
+        "matches": [ "*://shb.ais.ucla.edu/*" ],
+        "js": [ "mfa.js" ]
+    }]
+}
