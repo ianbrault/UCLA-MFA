@@ -7,13 +7,15 @@ created: 19 May 2018
 """
 
 import logging
+import os.path
 
 logfmt = logging.Formatter(fmt="[%(asctime)s]: %(message)s", datefmt='%I:%M:%S')
 log = logging.getLogger()
 log.setLevel(logging.INFO)
 
 # log to file
-fileLog = logging.FileHandler("server.log")
+logPath = os.path.dirname(os.path.realpath(__file__)) + "/server.log"
+fileLog = logging.FileHandler(logPath)
 fileLog.setFormatter(logfmt)
 log.addHandler(fileLog)
 
