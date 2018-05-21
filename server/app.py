@@ -171,4 +171,4 @@ app = web.Application(middlewares=middleware)
 app.router.add_routes(routes)
 
 log.info("starting server")
-web.run_app(app, access_log=None)
+web.run_app(app, port=8888, access_log=None)
