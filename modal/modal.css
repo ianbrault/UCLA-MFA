@@ -105,13 +105,11 @@ p.passcode {
     font-size: 20px;
 }
 
-.spinner {
+div.spinner {
     margin: 35px auto 35px;
     width: 60px;
     text-align: center;
-}
-
-.spinner > div {
+} div.spinner > div {
     width: 14px;
     height: 14px;
     background-color: rgb(42, 86, 139);
@@ -122,12 +120,12 @@ p.passcode {
     animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
 
-.spinner .bounce1 {
+div.spinner div.bounce1 {
     -webkit-animation-delay: -0.32s;
     animation-delay: -0.32s;
 }
 
-.spinner .bounce2 {
+div.spinner div.bounce2 {
     -webkit-animation-delay: -0.16s;
     animation-delay: -0.16s;
 }
