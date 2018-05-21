@@ -43,7 +43,7 @@ def store_codes(codes):
     """
     log.info("writing passcodes to file")
 
-    file_path = os.path.dirname(os.path.realpath(__file__)) + "./codes"
+    file_path = os.path.dirname(os.path.realpath(__file__)) + "/.codes"
     codes_file = open(file_path, 'w')
     codes_file.write("1")  # current
     for code in codes: codes_file.write(code)
