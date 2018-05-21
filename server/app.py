@@ -133,8 +133,10 @@ async def cors_middleware(req, handler):
     log.info("running CORS middleware handler")
 
     res = await handler(req)
+    origin = req.headers.get('Origin')
+
     # set CORS headers
-    res.headers['Access-Control-Allow-Origin'] = req.headers['Origin']
+    if origin: res.headers['Access-Control-Allow-Origin'] = req.headers['Origin']
     res.headers['Access-Control-Allow-Credentials'] = 'true'
     res.headers['Access-Control-Allow-Methods'] = 'GET'
     res.headers['Access-Control-Allow-Headers'] = 'Tab-Url'
