@@ -7,6 +7,7 @@ created: 19 May 2018
 """
 
 import os
+import re
 from urllib.parse import unquote_plus
 
 from aiohttp import web
@@ -23,12 +24,6 @@ twilio_num = os.getenv('TWILIO_NUM')
 twilio_sid = os.getenv('TWILIO_SID')
 twilio_tok = os.getenv('TWILIO_TOKEN')
 twilio_client = Client(twilio_sid, twilio_tok)
-
-cors_headers = {
-    "Access-Control-Allow-Origin": "",
-    "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Allow-Methods": "GET"
-}
 
 
 def is_mfa_sms(msg):
@@ -115,18 +110,49 @@ async def mfa(req):
     @param req (aiohttp.web.Request): request object
     @return (aiohttp.web.Response): response object
     """
-    log.info("GET / received from %s", req.remote)
-    # set CORS header
-    cors_headers['Access-Control-Allow-Origin'] = req.headers['Origin']
+    log.info("GET /passcode received from %s", req.remote)
+
+    # check origin URL of active tab
+    origin = req.headers.get('Tab-Url')
+    if not origin or not re.match(r'.*://shb.ais.ucla.edu/.*', origin):
+        return web.Response(text="invalid origin", status=400)
 
     # attempt to fetch MFA passcode
     # if ValueError thrown, passcodes are drained
     try:
         code = get_code()
-        return web.Response(text=code, headers=cors_headers)
+        return web.Response(text=code)
     except ValueError:
         log.info("passcodes file drained")
-        return web.Response(text="out of codes", headers=cors_headers)
+        return web.Response(text="out of codes")
+
+
+@web.middleware
+async def cors_middleware(req, handler):
+    """ add CORS headers to requests """
+    log.info("running CORS middleware handler")
+
+    res = await handler(req)
+    # set CORS headers
+    res.headers['Access-Control-Allow-Origin'] = req.headers['Origin']
+    res.headers['Access-Control-Allow-Credentials'] = 'true'
+    res.headers['Access-Control-Allow-Methods'] = 'GET'
+    res.headers['Access-Control-Allow-Headers'] = 'Tab-Url'
+
+    return res
+
+
+@web.middleware
+async def options_middleware(req, handler):
+    """ support OPTIONS request handling """
+    log.info("running OPTIONS middleware handler")
+
+    if req.method == "OPTIONS":
+        log.info("OPTIONS request received")
+        return web.Response()
+
+    res = await handler(req)
+    return res
 
 
 routes = [
@@ -134,7 +160,12 @@ routes = [
     web.post('/sms', sms),
 ]
 
-app = web.Application()
+middleware = [
+    cors_middleware,
+    options_middleware,
+]
+
+app = web.Application(middlewares=middleware)
 app.router.add_routes(routes)
 
 log.info("starting server")
