@@ -24,6 +24,12 @@ twilio_sid = os.getenv('TWILIO_SID')
 twilio_tok = os.getenv('TWILIO_TOKEN')
 twilio_client = Client(twilio_sid, twilio_tok)
 
+cors_headers = {
+    "Access-Control-Allow-Origin": "",
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Methods": "GET"
+}
+
 
 def is_mfa_sms(msg):
     """
@@ -110,15 +116,17 @@ async def mfa(req):
     @return (aiohttp.web.Response): response object
     """
     log.info("GET / received from %s", req.remote)
+    # set CORS header
+    cors_headers['Access-Control-Allow-Origin'] = req.headers['Origin']
 
     # attempt to fetch MFA passcode
     # if ValueError thrown, passcodes are drained
     try:
         code = get_code()
-        return web.Response(text=code)
+        return web.Response(text=code, headers=cors_headers)
     except ValueError:
         log.info("passcodes file drained")
-        return web.Response(text="out of codes")
+        return web.Response(text="out of codes", headers=cors_headers)
 
 
 routes = [
