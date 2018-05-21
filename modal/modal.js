@@ -8,12 +8,12 @@ document.addEventListener("click", (e) => {
         document.getElementById("button").className = "hidden"
         document.getElementById("spinner").className = "spinner"
         // check URL of active tab
-        browser.tabs.query({ 
+        browser.tabs.query({
             currentWindow: true, 
             active: true 
         }).then(tabs => {
             let tabUrl = tabs[0].url
-            fetch("http://aef01152.ngrok.io/passcode", {
+            fetch("http://mfa.ianbrault.com/passcode", {
                 method: "GET",
                 mode: "cors",
                 headers: { "Tab-Url": tabUrl },
