@@ -6,3 +6,6 @@
 *.codes
 
 server/__pycache__/*
+
+.web-extension-id
+web-ext-artifacts/*
