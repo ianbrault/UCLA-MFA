@@ -21,7 +21,9 @@ document.addEventListener("click", (e) => {
                 // hide spinner, display MFA passcode
                 document.getElementById("spinner").className = "hidden"
                 codeNode = document.createElement("p")
-                codeNode.className = "passcode"
+                codeNode.className = (code === "invalid origin") 
+                    ? "passcode-error"
+                    : "passcode";
                 codeNode.innerHTML = code
                 document.getElementById("content").appendChild(codeNode)
             })
